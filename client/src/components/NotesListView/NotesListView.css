@@ -1,0 +1,42 @@
+.note-list-view {
+  margin: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  width: 100%;
+  overflow: auto;
+  padding: 22px;
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  box-sizing: border-box;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.notes-empty,
+.notes-error {
+  width: 100%;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.notes-error {
+  color: var(--error);
+}
+
+.notes-error button {
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  background: var(--surface-strong);
+  color: var(--text-primary);
+  cursor: pointer;
+}
