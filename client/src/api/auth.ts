@@ -1,5 +1,12 @@
 import { request } from "./client";
-import { AuthResponse, Login, Register, User } from "../types";
+import {
+  AuthResponse,
+  CreateNote,
+  Login,
+  Note,
+  Register,
+  User,
+} from "../types";
 
 export const AuthApi = {
   //Method:post /login
@@ -28,5 +35,18 @@ export const AuthApi = {
   //method: get /users/me
   getCurrentUser: (): Promise<User> => {
     return request<User>("/users/me");
+  },
+
+  //method delete notes
+  deleteNote: (id: string): Promise<void> => {
+    return request<void>(`/notes/${id}`, { method: "DELETE" });
+  },
+
+  //method put notes
+  reductNote: (id: string, data: Partial<CreateNote>): Promise<Note> => {
+    return request<Note>(`/notes/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
   },
 };

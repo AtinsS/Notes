@@ -33,7 +33,13 @@ export const LoginSchema = z.object({
 export const RegisterSchema = z.object({
   username: z.string().min(5, "Минимум 5 символов"),
   email: z.string().email("Некорректный email"),
-  password: z.string().min(8, "Минимум 8 символов"),
+  password: z
+    .string()
+    .min(8, "Минимум 8 символов")
+    .regex(/[A-Z]/, "Нужна хотя бы одна заглавная буква")
+    .regex(/[a-z]/, "Нужна хотя бы одна строчная буква")
+    .regex(/[0-9]/, "Нужна хотя бы одна цифра")
+    .regex(/[^A-Za-z0-9]/, "Нужен спецсимвол"),
 });
 
 export type User = z.infer<typeof UserSchema>;

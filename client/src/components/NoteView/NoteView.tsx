@@ -1,3 +1,4 @@
+// src/components/NoteView/NoteView.tsx
 import "./NoteView.css";
 import type { Note } from "../../types";
 
@@ -12,7 +13,29 @@ const formatDate = (timestamp: number) => {
   });
 };
 
-export const NoteView = ({ title, text, createdAt }: Note) => {
+// Добавляем пропсы onEdit и onDelete
+interface NoteViewProps extends Note {
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+}
+
+export const NoteView = ({
+  id,
+  title,
+  text,
+  createdAt,
+  onEdit,
+  onDelete,
+}: NoteViewProps) => {
+  const handleDelete = () => onDelete?.(id);
+
+  const handleEdit = () => {
+    const newText = prompt("Редактировать текст:", text);
+    if (newText !== null && newText.trim() !== "") {
+      onEdit?.(id);
+    }
+  };
+
   return (
     <div className="note-view">
       <div className="note-view__head">
@@ -21,11 +44,20 @@ export const NoteView = ({ title, text, createdAt }: Note) => {
       </div>
 
       <p className="note-view__text">{text}</p>
+
       <div className="note-view__divider">
-        <button className="note-view__button note-view__button--delete">
+        <button
+          className="note-view__button note-view__button--delete"
+          onClick={handleDelete}
+          aria-label="Удалить заметку"
+        >
           🗑️
         </button>
-        <button className="note-view__button note-view__button--edit">
+        <button
+          className="note-view__button note-view__button--edit"
+          onClick={handleEdit}
+          aria-label="Редактировать заметку"
+        >
           ✏️
         </button>
       </div>
