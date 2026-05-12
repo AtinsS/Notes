@@ -22,7 +22,6 @@ export const NoteForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const onSubmit = async (data: CreateNote) => {
     try {
       await NotesApi.createNote(data);
-      console.log("Заметка успешно создана");
 
       reset();
       onSuccess?.();

@@ -55,6 +55,12 @@
   min-width: 0;
 }
 
+.note-edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
 @media (max-width: 840px) {
   .header {
     align-items: stretch;
@@ -64,5 +70,9 @@
   .content {
     grid-template-columns: 1fr;
     padding-top: 20px;
+  }
+
+  .notes-list {
+    grid-column: auto;
   }
 }

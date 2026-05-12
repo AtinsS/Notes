@@ -7,9 +7,13 @@ import { AuthApi } from "../../api/auth";
 
 type NotesListViewProps = {
   notesState: RequestState<NotesListResponse> & { refetch: () => void };
+  onEditNote: (id: string, title: string, text: string) => void;
 };
 
-export const NotesListView = ({ notesState }: NotesListViewProps) => {
+export const NotesListView = ({
+  notesState,
+  onEditNote,
+}: NotesListViewProps) => {
   const { status, refetch } = notesState;
 
   const handleDelete = async (id: string) => {
@@ -18,16 +22,6 @@ export const NotesListView = ({ notesState }: NotesListViewProps) => {
       refetch();
     } catch (err) {
       alert("Не удалось удалить заметку. Попробуйте позже.");
-      console.error(err);
-    }
-  };
-
-  const handleEdit = async (id: string, newText: string) => {
-    try {
-      await AuthApi.reductNote(id, { text: newText });
-      refetch();
-    } catch (err) {
-      alert("Не удалось сохранить изменения.");
       console.error(err);
     }
   };
@@ -56,7 +50,7 @@ export const NotesListView = ({ notesState }: NotesListViewProps) => {
               key={note.id}
               {...note}
               onDelete={handleDelete}
-              onEdit={handleEdit}
+              onEdit={onEditNote}
             />
           ))}
         </ul>
