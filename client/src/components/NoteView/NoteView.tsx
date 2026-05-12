@@ -15,7 +15,7 @@ const formatDate = (timestamp: number) => {
 
 // Добавляем пропсы onEdit и onDelete
 interface NoteViewProps extends Note {
-  onEdit?: (id: string) => void;
+  onEdit?: (id: string, text: string) => void;
   onDelete?: (id: string) => void;
 }
 
@@ -32,7 +32,7 @@ export const NoteView = ({
   const handleEdit = () => {
     const newText = prompt("Редактировать текст:", text);
     if (newText !== null && newText.trim() !== "") {
-      onEdit?.(id);
+      onEdit?.(id, newText);
     }
   };
 

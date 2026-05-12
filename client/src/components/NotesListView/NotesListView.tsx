@@ -1,34 +1,31 @@
 // src/components/NotesListView/NotesListView.tsx
 import "./NotesListView.css";
 import { NoteView } from "../NoteView";
-import { useFetch } from "../hooks/useFetch";
 import { Loader } from "../Loader";
-import type { NotesListResponse } from "../../types";
+import type { NotesListResponse, RequestState } from "../../types";
 import { AuthApi } from "../../api/auth";
 
-export const NotesListView = () => {
-  const { status, data, error, refetch } = useFetch<NotesListResponse>("/notes");
+type NotesListViewProps = {
+  notesState: RequestState<NotesListResponse> & { refetch: () => void };
+};
 
-  // --- Логика удаления ---
+export const NotesListView = ({ notesState }: NotesListViewProps) => {
+  const { status, refetch } = notesState;
+
   const handleDelete = async (id: string) => {
     try {
       await AuthApi.deleteNote(id);
-      refetch(); // Перезагружаем список после успеха
+      refetch();
     } catch (err) {
       alert("Не удалось удалить заметку. Попробуйте позже.");
       console.error(err);
     }
   };
 
-  // --- Логика редактирования ---
-  const handleEdit = async (id: string) => {
-    const newText = prompt("Введите новый текст:");
-    if (!newText || newText.trim() === "") return;
-
+  const handleEdit = async (id: string, newText: string) => {
     try {
-      // Отправляем только измененное поле (или весь объект, зависит от бэкенда)
       await AuthApi.reductNote(id, { text: newText });
-      refetch(); // Перезагружаем список
+      refetch();
     } catch (err) {
       alert("Не удалось сохранить изменения.");
       console.error(err);
@@ -43,22 +40,23 @@ export const NotesListView = () => {
     case "error":
       return (
         <div className="notes-error">
-          <p>Ошибка: {error.message}</p>
+          <p>Ошибка: {notesState.error.message}</p>
           <button onClick={refetch}>Повторить</button>
         </div>
       );
     case "success":
-      if (data.list.length === 0) {
+      if (notesState.data.list.length === 0) {
         return <div className="notes-empty">Нет заметок</div>;
       }
+
       return (
         <ul className="note-list-view">
-          {data.list.map((note) => (
-            <NoteView 
-              key={note.id} 
-              {...note} 
-              onDelete={handleDelete} // Пробрасываем обработчик
-              onEdit={handleEdit}     // Пробрасываем обработчик
+          {notesState.data.list.map((note) => (
+            <NoteView
+              key={note.id}
+              {...note}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
             />
           ))}
         </ul>

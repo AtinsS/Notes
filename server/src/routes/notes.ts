@@ -63,3 +63,54 @@ notesRouter.post("/", async (req, res) => {
 
   res.status(201).send(post.id);
 });
+
+const UpdateNoteSchema = z
+  .object({
+    title: z.string().min(1).optional(),
+    text: z.string().min(10).optional(),
+  })
+  .refine((data) => data.title !== undefined || data.text !== undefined, {
+    message: "No fields to update",
+  });
+
+notesRouter.put("/:id", async (req, res) => {
+  const userId = authorizeRequest(req);
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  const bodyParseResult = UpdateNoteSchema.safeParse(req.body);
+
+  if (!bodyParseResult.success) {
+    return res.status(400).send(bodyParseResult.error.message);
+  }
+
+  const note = await Notes.updateForUser(
+    req.params.id,
+    userId,
+    bodyParseResult.data,
+  );
+
+  if (!note) {
+    return res.status(404).send("Note not found");
+  }
+
+  res.status(200).json(note);
+});
+
+notesRouter.delete("/:id", async (req, res) => {
+  const userId = authorizeRequest(req);
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  const deleted = await Notes.deleteForUser(req.params.id, userId);
+
+  if (!deleted) {
+    return res.status(404).send("Note not found");
+  }
+
+  res.status(204).send();
+});

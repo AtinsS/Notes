@@ -27,7 +27,9 @@ export class Notes {
     userId: string,
     { page, pageSize, searchString }: IGetAllNotesOptions = {},
   ): IGetAllNotesResult {
-    let list = Object.values(database.data);
+    let list = Object.values(database.data).filter(
+      (note) => note.userId === userId,
+    );
     let pageCount = 1;
 
     if (searchString) {
@@ -65,5 +67,42 @@ export class Notes {
     });
 
     return note;
+  }
+
+  static async updateForUser(
+    id: string,
+    userId: string,
+    data: Partial<Pick<INote, "title" | "text">>,
+  ): Promise<INote | null> {
+    const note = database.data[id];
+
+    if (!note || note.userId !== userId) {
+      return null;
+    }
+
+    const updatedNote = {
+      ...note,
+      ...data,
+    };
+
+    await database.update((data) => {
+      data[id] = updatedNote;
+    });
+
+    return updatedNote;
+  }
+
+  static async deleteForUser(id: string, userId: string): Promise<boolean> {
+    const note = database.data[id];
+
+    if (!note || note.userId !== userId) {
+      return false;
+    }
+
+    await database.update((data) => {
+      delete data[id];
+    });
+
+    return true;
   }
 }

@@ -2,7 +2,6 @@ import "./App.css";
 import { AuthForm } from "./components/AuthForm";
 import { useFetch } from "./components/hooks/useFetch";
 import { Loader } from "./components/Loader";
-import { LoaderMain } from "./components/LoaderMain";
 import { LogoutButton } from "./components/LogoutButton";
 import { NoteForm } from "./components/NoteForm";
 import { NotesListView } from "./components/NotesListView";
